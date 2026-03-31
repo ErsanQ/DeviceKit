@@ -6,21 +6,33 @@ import UIKit
 import AppKit
 #endif
 
-/// The current status of the hardware device.
+/// A comprehensive utility for identifying Apple hardware and screen characteristics.
+///
+/// `Device` provides a unified interface to access hardware identifiers, model names,
+/// and specific UI-affecting features like notches or dynamic islands.
+///
+/// ## Usage
+/// ```swift
+/// if Device.current.hasDynamicIsland {
+///     showIslandSpecificUI()
+/// }
+/// ```
 public struct Device: Sendable {
     
-    /// The shared instance of the current device.
+    /// The shared instance representing the hardware currently running the code.
     public static let current = Device()
     
     private init() {}
     
     /// The user-visible name of the device model (e.g., "iPhone 16 Pro Max").
+    ///
+    /// This property maps internal hardware identifiers to friendly names.
     public var modelName: String {
         let identifier = hardwareIdentifier
         return DeviceType.from(identifier: identifier).rawValue
     }
     
-    /// A boolean value indicating whether the device is an iPad.
+    /// A boolean value indicating whether the current device is an iPad.
     public var isPad: Bool {
         #if os(iOS)
         return UIDevice.current.userInterfaceIdiom == .pad
@@ -29,7 +41,9 @@ public struct Device: Sendable {
         #endif
     }
     
-    /// A boolean value indicating whether the device has a Notch.
+    /// A boolean value indicating whether the device features a display notch.
+    ///
+    /// This includes iPhone X through iPhone 14 (excluding Dynamic Island models).
     public var hasNotch: Bool {
         let type = DeviceType.from(identifier: hardwareIdentifier)
         switch type {
@@ -44,7 +58,9 @@ public struct Device: Sendable {
         }
     }
     
-    /// A boolean value indicating whether the device has a Dynamic Island.
+    /// A boolean value indicating whether the device features a Dynamic Island.
+    ///
+    /// This includes iPhone 14 Pro, all iPhone 15 models, and all subsequent models.
     public var hasDynamicIsland: Bool {
         let type = DeviceType.from(identifier: hardwareIdentifier)
         switch type {
@@ -56,15 +72,19 @@ public struct Device: Sendable {
         }
     }
     
-    /// A boolean value indicating whether the device has a small screen (e.g., SE, Mini).
+    /// A boolean value indicating whether the device has a small form factor screen.
+    ///
+    /// This covers "Mini", "SE", and legacy 4.7-inch models.
     public var isSmallScreen: Bool {
         let raw = modelName
         return raw.contains("Mini") || raw.contains("SE") || raw.contains("8")
     }
     
-    /// The raw hardware identifier (e.g., "iPhone16,1").
+    /// The raw internal hardware identifier (e.g., "iPhone16,1").
+    ///
+    /// This value is retrieved directly from the system's `utsname` structure.
     public var hardwareIdentifier: String {
-        #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
+        #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
         var systemInfo = utsname()
         uname(&systemInfo)
         let machineMirror = Mirror(reflecting: systemInfo.machine)
