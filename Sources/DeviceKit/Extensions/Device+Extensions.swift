@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import Foundation
 import SwiftUI
 #if canImport(UIKit)
@@ -73,3 +74,4 @@ public extension Device {
         #endif
     }
 }
+#endif

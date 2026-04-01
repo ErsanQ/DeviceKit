@@ -21,7 +21,8 @@ let package = Package(
         .target(
             name: "DeviceKit",
             dependencies: [],
-            path: "Sources/DeviceKit"),
+            path: "Sources/DeviceKit",
+            exclude: ["Examples"]),
         .testTarget(
             name: "DeviceKitTests",
             dependencies: ["DeviceKit"],

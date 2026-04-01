@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 import DeviceKit
 
@@ -74,3 +75,4 @@ struct CapabilityRow: View {
         DeviceExampleView()
     }
 }
+#endif
